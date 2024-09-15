@@ -3,8 +3,6 @@
 from pydantic import BaseModel
 from sqlalchemy import delete, insert, select, update
 
-from schemas.hotels import Hotel
-
 
 class BaseRepository:
     model = None

@@ -1,6 +1,6 @@
     
 from sqlalchemy import delete, func, insert, literal_column, select, update
-from repositories.base import BaseRepository
+from src.repositories.base import BaseRepository
 from schemas.hotels import Hotel
 from src.models.hotels import HotelsOrm
 
