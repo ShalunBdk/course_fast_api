@@ -28,44 +28,30 @@ async def get_hotels(
         )
 
 @router.delete("/{hotel_id}", summary="Удаление отеля")
-async def delete_hotel(
-    location: str | None = Query(None, description="Расположение отеля"),
-    title: str | None = Query(None, description="Название отеля"),
-):
+async def delete_hotel(hotel_id: int):
     async with async_session_maker() as session:
-        hotel = await HotelsRepository(session).delete(
-            location = location,
-            title = title,
-        )
+        hotel = await HotelsRepository(session).delete(id=hotel_id)
         await session.commit()
-    return {"status":"ok"}
-
-@router.patch("/{hotel_id}", summary="Частичное обновление отеля")
-def patch_hotel(
-    hotel_id: int,
-    hotel_data: HotelPATCH
-):
-    global hotels
-    hotel = [hotel for hotel in hotels if hotel["id"] == hotel_id][0]
-    if hotel_data.title:
-        hotel["title"] = hotel_data.title
-    if hotel_data.name:
-        hotel["name"] = hotel_data.name
     return {"status":"ok"}
 
 @router.put("/{hotel_id}", summary="Обновление отеля")
 async def put_hotel(
-    hotel_data: Hotel,
-    location: str | None = Query(None, description="Расположение отеля"),
-    title: str | None = Query(None, description="Название отеля"),
+    hotel_id: int,
+    hotel_data: Hotel
 
 ):
     async with async_session_maker() as session:
-        await HotelsRepository(session).edit(
-            hotel_data,
-            location = location,
-            title = title
-        )
+        await HotelsRepository(session).edit(hotel_data, id=hotel_id)
+        await session.commit()
+    return {"status":"ok"}
+
+@router.patch("/{hotel_id}", summary="Частичное обновление отеля")
+async def patch_hotel(
+    hotel_id: int,
+    hotel_data: HotelPATCH
+):
+    async with async_session_maker() as session:
+        await HotelsRepository(session).edit(hotel_data, exclude_unset=True,id=hotel_id)
         await session.commit()
     return {"status":"ok"}
 
