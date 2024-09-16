@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, Response, Request
 
 import sqlalchemy
 
+from api.dependecies import UserIdDep
 from services.auth import AuthService
 from src.database import async_session_maker
 from src.repositories.users import UsersRepository
@@ -25,7 +26,7 @@ async def login_user(
             if not AuthService().verify_password(data.password, user.hashed_password):
                 raise HTTPException(status_code=401, detail="Пароль не верный")
         except sqlalchemy.exc.NoResultFound:
-            raise HTTPException(status_code=401, detail="Пользвоталь с таким email не зарегистрирован")
+            raise HTTPException(status_code=401, detail="Пользователь с таким email не зарегистрирован")
         access_token = AuthService().create_access_token({"user_id": user.id})
         response.set_cookie("access_token", access_token)
         return {"access_token": access_token}
@@ -45,13 +46,11 @@ async def register_user(
     
     return {"status":"ok"}
 
-@router.get("/only_auth")
-async def only_auth(
-    request: Request,
+@router.get("/me", summary="Получить пользователя")
+async def get_me(
+    user_id: UserIdDep
 ):  
-    try:
-        access_token = request.cookies["access_token"]
-    except KeyError:
-        access_token = None
-    return access_token
+    async with async_session_maker() as session:
+        user = await UsersRepository(session).get_one_or_none(id=user_id)
+    return user
     
