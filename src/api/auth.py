@@ -30,6 +30,14 @@ async def login_user(
         access_token = AuthService().create_access_token({"user_id": user.id})
         response.set_cookie("access_token", access_token)
         return {"access_token": access_token}
+    
+@router.post("/logout", summary="Выход пользователя")
+async def login_user(
+    data: UserRequestAdd,
+    response: Response,
+):
+        response.delete_cookie("access_token")
+        return {"status": "ok"}
 
 @router.post("/register", summary="Регистрация пользователя")
 async def register_user(
