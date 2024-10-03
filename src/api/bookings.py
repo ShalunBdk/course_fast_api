@@ -2,13 +2,24 @@ from datetime import date
 from fastapi import Query, APIRouter, Body
 
 from schemas.bookings import BookingAdd, BookingAddRequest
-from src.api.dependecies import DBDep, PaginationDep, UserIdDep
+from src.api.dependecies import DBDep, UserIdDep
 
 router = APIRouter(prefix="/bookings",tags=["Бронирование"])
 
 
+@router.get("/", summary="Получить все бронирования")
+async def get_bookings(db: DBDep):
+    return await db.bookings.get_all()
+
+@router.get("/me", summary="Получить бронирования текущего пользователя")
+async def get_my_bookings(
+    user_id: UserIdDep,
+    db: DBDep,
+):
+    return await db.bookings.get_filtered(user_id = user_id)
+
 @router.post("/", summary="Создание бронирования")
-async def create_room(
+async def add_booking(
     user_id: UserIdDep,
     db: DBDep,
     booking_data: BookingAddRequest = Body(openapi_examples={
@@ -25,8 +36,13 @@ async def create_room(
     }}
     })
 ):
-    _room_data = await db.rooms.get_filtered(id = booking_data.room_id)
-    _booking_data = BookingAdd(user_id=user_id, price=_room_data[0].price, **booking_data.model_dump())
+    _room_data = await db.rooms.get_one_or_none(id = booking_data.room_id)
+    room_price = _room_data.price
+    _booking_data = BookingAdd(
+        user_id=user_id,
+        price=room_price,
+        **booking_data.model_dump()
+    )
     booking = await db.bookings.add(_booking_data)
     await db.commit()
 

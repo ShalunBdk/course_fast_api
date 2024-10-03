@@ -1,4 +1,3 @@
-from sqlalchemy import func, insert, select
 from schemas.bookings import Booking
 from src.repositories.base import BaseRepository
 from models.bookings import BookingsOrm
