@@ -24,8 +24,8 @@ async def add_booking(
     db: DBDep,
     booking_data: BookingAddRequest = Body(openapi_examples={
     "1":{"summary":"Вип номер дубай", "value": {
-        "date_from":"2025-03-11",
-        "date_to":"2025-03-12",
+        "date_from":"2024-03-11",
+        "date_to":"2024-03-12",
         "room_id": 8
 
     }},
