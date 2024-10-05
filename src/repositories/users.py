@@ -2,7 +2,7 @@
 from pydantic import EmailStr
 from sqlalchemy import select
 
-from schemas.users import User, UserWithHashedPassword
+from src.schemas.users import User, UserWithHashedPassword
 from src.repositories.base import BaseRepository
 from src.models.users import UsersOrm
 

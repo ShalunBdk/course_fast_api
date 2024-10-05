@@ -3,11 +3,11 @@ from fastapi import APIRouter, HTTPException, Response, Request
 
 import sqlalchemy
 
-from api.dependecies import DBDep, UserIdDep
-from services.auth import AuthService
+from src.api.dependecies import DBDep, UserIdDep
+from src.services.auth import AuthService
 from src.database import async_session_maker
 from src.repositories.users import UsersRepository
-from schemas.users import UserAdd, UserRequestAdd
+from src.schemas.users import UserAdd, UserRequestAdd
 
 
 router = APIRouter(prefix="/auth", tags=["Авторизация и Аутентификация"])

@@ -1,7 +1,7 @@
 from datetime import date
 from fastapi import Query, APIRouter, Body
 
-from schemas.bookings import BookingAdd, BookingAddRequest
+from src.schemas.bookings import BookingAdd, BookingAddRequest
 from src.api.dependecies import DBDep, UserIdDep
 
 router = APIRouter(prefix="/bookings",tags=["Бронирование"])
