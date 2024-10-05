@@ -36,6 +36,10 @@ class HotelsRepository(BaseRepository):
             self,
             date_from: date,
             date_to: date,
+            location,
+            title,
+            limit,
+            offset,
     ):
         rooms_ids_to_get = rooms_ids_for_booking(date_from=date_from, date_to=date_to)
         hotels_ids_to_get = (
@@ -43,4 +47,18 @@ class HotelsRepository(BaseRepository):
             .select_from(RoomsOrm)
             .filter(RoomsOrm.id.in_(rooms_ids_to_get))
         )
-        return await self.get_filtered(HotelsOrm.id.in_(hotels_ids_to_get))
+        if location:
+            hotels_ids_to_get = hotels_ids_to_get.filter(func.lower(HotelsOrm.location).contains(location.strip().lower()))
+        if title:
+            hotels_ids_to_get = hotels_ids_to_get.filter(func.lower(HotelsOrm.title).contains(title.strip().lower()))
+        query = (
+            select(self.model)
+            .filter(HotelsOrm.id.in_(hotels_ids_to_get))
+        )
+        query = (
+            query
+            .limit(limit)
+            .offset(offset)
+        )
+        result = await self.session.execute(query)
+        return [self.schema.model_validate(model, from_attributes=True) for model in result.scalars().all()]
