@@ -4,6 +4,7 @@ from fastapi import APIRouter, Body, Query
 from src.schemas.facilities import RoomsFacilityAdd
 from src.api.dependecies import DBDep
 from src.repositories.rooms import RoomsRepository
+from src. repositories.facilities import FacilitiesRepository
 from src.schemas.rooms import RoomAdd, RoomAddRequest, RoomPatch, RoomPatchRequest
 from src.database import async_session_maker 
 
@@ -72,7 +73,7 @@ async def put_room(
     _room_data = RoomAdd(hotel_id=hotel_id, **room_data.model_dump())
     await db.rooms.edit(_room_data, id=room_id)
 
-    await db.rooms.edit_facilities(room_id=room_id, facilities_ids=room_data.facilities_ids)
+    await db.rooms_facilities.set_room_facilities(room_id=room_id, facilities_ids=room_data.facilities_ids)
     await db.commit()
 
     return {"status":"ok"}
@@ -94,8 +95,10 @@ async def patch_room(
     room_data: RoomPatchRequest,
     db: DBDep,
 ):
-    _room_data = RoomPatch(hotel_id=hotel_id, **room_data.model_dump(exclude_unset=True))
+    _room_data_dict = room_data.model_dump(exclude_unset=True)
+    _room_data = RoomPatch(hotel_id=hotel_id, **_room_data_dict)
     await db.rooms.edit(_room_data, exclude_unset=True,id=room_id, hotel_id=hotel_id)
-    await db.rooms.edit_facilities(room_id=room_id, facilities_ids=room_data.facilities_ids)
+    if "facilities_ids" in _room_data_dict:
+        await db.rooms_facilities.set_room_facilities(room_id=room_id, facilities_ids=room_data.facilities_ids)
     await db.commit()
     return {"status":"ok"}
