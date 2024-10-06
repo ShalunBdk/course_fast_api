@@ -1,7 +1,9 @@
 
 
 from pydantic import BaseModel
-from sqlalchemy import delete, insert, select, update
+from sqlalchemy import delete, exists, insert, select, update
+
+from src.models.facilities import RoomsFacilitiesOrm
 
 
 class BaseRepository:

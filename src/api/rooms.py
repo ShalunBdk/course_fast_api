@@ -71,7 +71,10 @@ async def put_room(
 ):
     _room_data = RoomAdd(hotel_id=hotel_id, **room_data.model_dump())
     await db.rooms.edit(_room_data, id=room_id)
+
+    await db.rooms.edit_facilities(room_id=room_id, facilities_ids=room_data.facilities_ids)
     await db.commit()
+
     return {"status":"ok"}
 
 @router.delete("/{hotel_id}/rooms/{room_id}", summary="Удаление номера")
@@ -93,5 +96,6 @@ async def patch_room(
 ):
     _room_data = RoomPatch(hotel_id=hotel_id, **room_data.model_dump(exclude_unset=True))
     await db.rooms.edit(_room_data, exclude_unset=True,id=room_id, hotel_id=hotel_id)
+    await db.rooms.edit_facilities(room_id=room_id, facilities_ids=room_data.facilities_ids)
     await db.commit()
     return {"status":"ok"}
