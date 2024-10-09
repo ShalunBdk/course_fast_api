@@ -9,6 +9,7 @@ billiard==4.2.1
 black==24.8.0
 celery==5.4.0
 certifi==2024.7.4
+cffi==1.17.1
 click==8.1.7
 click-didyoumean==0.3.1
 click-plugins==1.1.1
@@ -19,12 +20,14 @@ email_validator==2.2.0
 fastapi==0.111.1
 fastapi-cache2==0.2.2
 fastapi-cli==0.0.4
+gevent==24.2.1
 greenlet==3.1.0
 h11==0.14.0
 httpcore==1.0.5
 httptools==0.6.1
 httpx==0.27.0
 idna==3.7
+iniconfig==2.0.0
 Jinja2==3.1.4
 kombu==5.4.2
 Mako==1.3.5
@@ -36,13 +39,17 @@ packaging==24.1
 passlib==1.7.4
 pathspec==0.12.1
 pendulum==3.0.0
+pillow==10.4.0
 platformdirs==4.3.3
+pluggy==1.5.0
 prompt_toolkit==3.0.48
+pycparser==2.22
 pydantic==2.8.2
 pydantic-settings==2.5.2
 pydantic_core==2.20.1
 Pygments==2.18.0
 PyJWT==2.9.0
+pytest==8.3.3
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 python-multipart==0.0.9
@@ -63,3 +70,5 @@ vine==5.1.0
 watchfiles==0.22.0
 wcwidth==0.2.13
 websockets==12.0
+zope.event==5.0
+zope.interface==7.0.3
