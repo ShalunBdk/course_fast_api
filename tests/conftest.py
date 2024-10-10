@@ -6,8 +6,8 @@ from src.config import settings
 
 @pytest.fixture(scope="session", autouse=True)
 async def async_main():
-    assert settings.MODE == "TEST"
-    print(settings.MODE)
+    assert settings.DB_NAME == "test"
+
     async with engine_null_pool.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
