@@ -21,10 +21,10 @@ async def setup_database(check_test_db):
     async with engine_null_pool.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
-    f = open('tests/mock_hotels.json', encoding="utf-8")
-    data_hotels = json.load(f)
-    f = open('tests/mock_rooms.json', encoding="utf-8")
-    data_rooms = json.load(f)
+    with open('tests/mock_hotels.json', encoding="utf-8") as file:
+        data_hotels = json.load(file)
+    with open('tests/mock_rooms.json', encoding="utf-8") as file:
+        data_rooms = json.load(file)
     insert_hotels_stmt = insert(HotelsOrm).values(data_hotels)
     insert_rooms_stmt = insert(RoomsOrm).values(data_rooms)
     async with DBManager(session_factory=async_session_maker_null_pool) as db:
