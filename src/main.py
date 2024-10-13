@@ -5,7 +5,6 @@ import uvicorn
 
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache.decorator import cache
 
 import sys
 from pathlib import Path

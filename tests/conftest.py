@@ -3,6 +3,9 @@ import pytest
 
 from httpx import AsyncClient
 from sqlalchemy import insert
+from unittest import mock
+
+mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f).start()
 
 from src.api.dependecies import get_db
 from src.schemas.rooms import RoomAdd
@@ -14,6 +17,7 @@ from src.main import app
 from src.models.hotels import HotelsOrm
 from src.models.rooms import RoomsOrm
 from src.utils.db_manager import DBManager
+
 
 @pytest.fixture(scope="session", autouse=True)
 async def check_test_db():
@@ -60,3 +64,4 @@ async def register_user(ac, setup_database):
             "password": "1234"
         }
     )
+
