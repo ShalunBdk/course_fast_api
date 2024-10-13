@@ -4,6 +4,7 @@ import pytest
 from httpx import AsyncClient
 from sqlalchemy import insert
 
+from src.api.dependecies import get_db
 from src.schemas.rooms import RoomAdd
 from src.schemas.hotels import HotelAdd
 from src.database import Base, engine_null_pool, async_session_maker_null_pool
@@ -18,10 +19,16 @@ from src.utils.db_manager import DBManager
 async def check_test_db():
     assert settings.DB_NAME == "test"
 
-@pytest.fixture(scope="function")
-async def db():
+async def get_db_null_pull():
     async with DBManager(session_factory=async_session_maker_null_pool) as db:
         yield db
+
+@pytest.fixture(scope="function")
+async def db():
+    async for db in get_db_null_pull():
+        yield db
+
+app.dependency_overrides[get_db] = get_db_null_pull
 
 @pytest.fixture(scope="session", autouse=True)
 async def setup_database(check_test_db):
