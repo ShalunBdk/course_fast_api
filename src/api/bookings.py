@@ -7,7 +7,7 @@ from src.api.dependecies import DBDep, UserIdDep
 router = APIRouter(prefix="/bookings",tags=["Бронирование"])
 
 
-@router.get("/", summary="Получить все бронирования")
+@router.get("", summary="Получить все бронирования")
 async def get_bookings(db: DBDep):
     return await db.bookings.get_all()
 
@@ -18,8 +18,8 @@ async def get_my_bookings(
 ):
     return await db.bookings.get_filtered(user_id = user_id)
 
-@router.post("/", summary="Создание бронирования")
-async def add_booking(
+@router.post("", summary="Создание бронирования")
+async def create_booking(
     user_id: UserIdDep,
     db: DBDep,
     booking_data: BookingAddRequest = Body(openapi_examples={
@@ -43,7 +43,9 @@ async def add_booking(
         price=room_price,
         **booking_data.model_dump()
     )
-    booking = await db.bookings.add(_booking_data)
+    booking = await db.bookings.add_booking(_booking_data)
     await db.commit()
-
-    return {"status":"ok", "data":booking}
+    if booking:
+        return {"status":"ok", "data":booking}
+    else:
+        return {"status":"not available"}
