@@ -40,7 +40,9 @@ async def logout(
 async def register_user(
     data: UserRequestAdd,
     db: DBDep,
-):
+):  
+    if not data.password:
+        raise HTTPException(status_code=400, detail="Введён пустой пароль")
     hashed_password = AuthService().hash_password(data.password)
     new_user_data = UserAdd(email=data.email, hashed_password=hashed_password)
     try:
@@ -56,6 +58,8 @@ async def get_me(
     user_id: UserIdDep,
     db: DBDep,
 ):  
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Пользователь не найден")
     user = await db.users.get_one_or_none(id=user_id)
     return user
     
