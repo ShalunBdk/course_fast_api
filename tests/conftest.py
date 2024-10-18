@@ -1,8 +1,8 @@
+# ruff: noqa: E402
 import json
 import pytest
 
 from httpx import AsyncClient
-from sqlalchemy import insert
 from unittest import mock
 
 mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f).start()
@@ -11,13 +11,10 @@ from src.api.dependecies import get_db
 from src.schemas.rooms import RoomAdd
 from src.schemas.hotels import HotelAdd
 from src.database import Base, engine_null_pool, async_session_maker_null_pool
-from src.models import *
+from src.models import * # noqa
 from src.config import settings
 from src.main import app
-from src.models.hotels import HotelsOrm
-from src.models.rooms import RoomsOrm
 from src.utils.db_manager import DBManager
-
 
 @pytest.fixture(scope="session", autouse=True)
 async def check_test_db():

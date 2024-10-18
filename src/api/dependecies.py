@@ -1,7 +1,6 @@
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, Query, Request
-import jwt
 from pydantic import BaseModel
 
 from src.services.auth import AuthService

@@ -3,10 +3,7 @@ from fastapi import APIRouter, Body, Query
 
 from src.schemas.facilities import RoomsFacilityAdd
 from src.api.dependecies import DBDep
-from src.repositories.rooms import RoomsRepository
-from src. repositories.facilities import FacilitiesRepository
 from src.schemas.rooms import RoomAdd, RoomAddRequest, RoomPatch, RoomPatchRequest
-from src.database import async_session_maker 
 
 
 router = APIRouter(prefix="/hotels",tags=["Номера"])

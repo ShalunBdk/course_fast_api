@@ -1,5 +1,5 @@
 from datetime import date
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 class BookingAddRequest(BaseModel):
     date_from: date

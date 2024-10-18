@@ -1,12 +1,10 @@
 
-from fastapi import APIRouter, HTTPException, Response, Request
+from fastapi import APIRouter, HTTPException, Response
 
 import sqlalchemy
 
 from src.api.dependecies import DBDep, UserIdDep
 from src.services.auth import AuthService
-from src.database import async_session_maker
-from src.repositories.users import UsersRepository
 from src.schemas.users import UserAdd, UserRequestAdd
 
 

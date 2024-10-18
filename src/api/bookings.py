@@ -1,5 +1,5 @@
-from datetime import date
-from fastapi import Query, APIRouter, Body
+
+from fastapi import APIRouter, Body
 
 from src.schemas.bookings import BookingAdd, BookingAddRequest
 from src.api.dependecies import DBDep, UserIdDep

@@ -1,6 +1,5 @@
 import pytest
 
-from src.utils.db_manager import DBManager
 from tests.conftest import get_db_null_pull
 
 

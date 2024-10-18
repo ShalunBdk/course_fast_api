@@ -1,8 +1,5 @@
 import pytest
 
-from src.utils.db_manager import DBManager
-from tests.conftest import get_db_null_pull
-
 
 @pytest.mark.parametrize("email, password, status_code", [
     ("user1@mail.ru", "gfdg@gdfj6!", 200),
@@ -46,7 +43,7 @@ async def test_login_user(
 
     response_me = await ac.get("/auth/me")
 
-    respone_logout = await ac.post("/auth/logout")
+    await ac.post("/auth/logout")
 
     assert response.status_code == status_code
     if status_code == 200:
@@ -56,8 +53,8 @@ async def test_login_user(
 
     assert response_me.status_code == status_code
     if status_code == 200:
-        response_me = response.json()
+        res_me = response_me.json()
         assert isinstance(res, dict)
-        assert response_me["access_token"]
+        assert res_me["email"] == email
 
-    assert ac.cookies.get("access_token") == None
+    assert ac.cookies.get("access_token") is None
