@@ -1,9 +1,10 @@
 from datetime import date
-from fastapi import Query, APIRouter, Body
+from fastapi import HTTPException, Query, APIRouter, Body
 
 from fastapi_cache.decorator import cache
 
 
+from src.exceptions import ObjectNotFoundException
 from src.api.dependecies import DBDep, PaginationDep
 from src.schemas.hotels import HotelAdd, HotelPATCH
 
@@ -21,15 +22,21 @@ async def get_hotels(
     date_from: date = Query(examples="2024-10-05"),
     date_to: date = Query(examples="2024-10-06"),
 ):
+    if date_from > date_to:
+        raise HTTPException(status_code=409, detail="Дата заезда позже даты выезда")
     per_page = pagination.per_page or 5
-    return await db.hotels.get_filtered_by_time(
-        location=location,
-        title=title,
-        limit=per_page,
-        offset=per_page * (pagination.page - 1),
-        date_from=date_from,
-        date_to=date_to,
-    )
+    try:
+        result = await db.hotels.get_filtered_by_time(
+            location=location,
+            title=title,
+            limit=per_page,
+            offset=per_page * (pagination.page - 1),
+            date_from=date_from,
+            date_to=date_to,
+        )
+    except ObjectNotFoundException:
+        raise HTTPException(status_code=404, detail="Отели не найдены")
+    return result
 
 
 @router.get("/{hotel_id}", summary="Получение отеля по ID")
@@ -37,7 +44,10 @@ async def get_hotel(
     hotel_id: int,
     db: DBDep,
 ):
-    return await db.hotels.get_one_or_none(id=hotel_id)
+    try:
+        return await db.hotels.get_one(id=hotel_id)
+    except ObjectNotFoundException:
+        raise HTTPException(status_code=404, detail="Отель не найден")
 
 
 @router.delete("/{hotel_id}", summary="Удаление отеля")

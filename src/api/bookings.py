@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Body, HTTPException
 
+from src.exceptions import AllRoomsAreBookedException, ObjectNotFoundException
 from src.schemas.hotels import Hotel
 from src.schemas.rooms import Room
 from src.schemas.bookings import BookingAdd, BookingAddRequest
@@ -46,13 +47,19 @@ async def add_booking(
         }
     ),
 ):
-    _room_data: Room | None = await db.rooms.get_one_or_none(id=booking_data.room_id)
-    hotel: Hotel | None = await db.hotels.get_one_or_none(id=_room_data.hotel_id)
+    try:
+        _room_data = await db.rooms.get_one(id=booking_data.room_id)
+    except ObjectNotFoundException:
+        raise HTTPException(status_code=404, detail="Номер не найден")
+    hotel: Hotel = await db.hotels.get_one(id=_room_data.hotel_id)
     room_price = _room_data.price
     _booking_data = BookingAdd(
         user_id=user_id, price=room_price, **booking_data.model_dump()
     )
-    booking = await db.bookings.add_booking(_booking_data, hotel_id=hotel.id)
+    try:
+        booking = await db.bookings.add_booking(_booking_data, hotel_id=hotel.id)
+    except AllRoomsAreBookedException as e:
+        raise HTTPException(status_code=409, detail=e.detail)
     await db.commit()
     if booking:
         return {"status": "ok", "data": booking}

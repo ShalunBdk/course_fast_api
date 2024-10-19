@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Response
 
 import sqlalchemy
 
+from sqlalchemy.exc import IntegrityError
 from src.api.dependecies import DBDep, UserIdDep
 from src.services.auth import AuthService
 from src.schemas.users import UserAdd, UserRequestAdd
@@ -48,9 +49,9 @@ async def register_user(
     new_user_data = UserAdd(email=data.email, hashed_password=hashed_password)
     try:
         await db.users.add(new_user_data)
-    except sqlalchemy.exc.IntegrityError:
+    except IntegrityError:
         raise HTTPException(
-            status_code=400, detail="Пользвоталь с таким email уже зарегистрирован"
+            status_code=409, detail="Пользвоталь с таким email уже зарегистрирован"
         )
     await db.commit()
 

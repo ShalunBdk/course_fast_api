@@ -1,8 +1,10 @@
 from typing import Any, Sequence
 from pydantic import BaseModel
 from sqlalchemy import delete, insert, select, update
+from sqlalchemy.exc import NoResultFound, IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.exceptions import ObjectNotFoundException
 from src.database import Base
 from src.repositories.mappers.base import DataMapper
 
@@ -32,12 +34,24 @@ class BaseRepository:
         if model is None:
             return None
         return self.mapper.map_to_domain_entity(model)
+    
+    async def get_one(self, **filer_by) -> BaseModel:
+        query = select(self.model).filter_by(**filer_by)
+        result = await self.session.execute(query)
+        try:
+            model = result.scalar_one()
+        except NoResultFound:
+            raise ObjectNotFoundException
+        return self.mapper.map_to_domain_entity(model)
 
     async def add(self, data: BaseModel) -> list[BaseModel | Any]:
         add_data_stmt = (
             insert(self.model).values(**data.model_dump()).returning(self.model)
         )
-        result = await self.session.execute(add_data_stmt)
+        try:
+            result = await self.session.execute(add_data_stmt)
+        except IntegrityError:
+            raise ObjectNotFoundException
         model = result.scalars().one()
         return self.mapper.map_to_domain_entity(model)
 
@@ -51,8 +65,15 @@ class BaseRepository:
             .filter_by(**filter_by)
             .values(data.model_dump(exclude_unset=exclude_unset))
         )
-        await self.session.execute(update_stmt)
+        result = await self.session.execute(update_stmt)
+        if result.rowcount == 0:
+            raise ObjectNotFoundException
+        
 
     async def delete(self, **filter_by):
         delete_stmt = delete(self.model).filter_by(**filter_by)
-        await self.session.execute(delete_stmt)
+        result = await self.session.execute(delete_stmt)
+        if result.rowcount == 0:
+            raise ObjectNotFoundException
+        
+        
