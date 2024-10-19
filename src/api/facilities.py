@@ -8,7 +8,7 @@ from src.api.dependecies import DBDep
 from src.tasks.tasks import test_task
 
 
-router = APIRouter(prefix="/facilities",tags=["Удобства"])
+router = APIRouter(prefix="/facilities", tags=["Удобства"])
 
 
 @router.get("", summary="Получение удобств")
@@ -29,4 +29,4 @@ async def create_facilities(
 
     test_task.delay()
 
-    return {"status":"ok", "data":facilitiy}
+    return {"status": "ok", "data": facilitiy}

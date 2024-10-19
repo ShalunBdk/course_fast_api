@@ -22,7 +22,7 @@ async def test_booking_crud(db):
     update_booking_data = BookingPATCH(
         date_from=date(year=2024, month=8, day=1),
         date_to=date(year=2024, month=8, day=15),
-        price=10000
+        price=10000,
     )
     await db.bookings.edit(update_booking_data, exclude_unset=True, id=result.id)
     updated_booking = await db.bookings.get_one_or_none(id=result.id)

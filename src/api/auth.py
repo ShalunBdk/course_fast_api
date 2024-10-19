@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, HTTPException, Response
 
 import sqlalchemy
@@ -22,11 +21,14 @@ async def login_user(
         if not AuthService().verify_password(data.password, user.hashed_password):
             raise HTTPException(status_code=401, detail="Пароль не верный")
     except sqlalchemy.exc.NoResultFound:
-        raise HTTPException(status_code=401, detail="Пользователь с таким email не зарегистрирован")
+        raise HTTPException(
+            status_code=401, detail="Пользователь с таким email не зарегистрирован"
+        )
     access_token = AuthService().create_access_token({"user_id": user.id})
     response.set_cookie("access_token", access_token)
     return {"access_token": access_token}
-    
+
+
 @router.post("/logout", summary="Выход пользователя")
 async def logout(
     response: Response,
@@ -34,11 +36,12 @@ async def logout(
     response.delete_cookie("access_token")
     return {"status": "ok"}
 
+
 @router.post("/register", summary="Регистрация пользователя")
 async def register_user(
     data: UserRequestAdd,
     db: DBDep,
-):  
+):
     if not data.password:
         raise HTTPException(status_code=400, detail="Введён пустой пароль")
     hashed_password = AuthService().hash_password(data.password)
@@ -46,18 +49,20 @@ async def register_user(
     try:
         await db.users.add(new_user_data)
     except sqlalchemy.exc.IntegrityError:
-        raise HTTPException(status_code=400, detail="Пользвоталь с таким email уже зарегистрирован")
+        raise HTTPException(
+            status_code=400, detail="Пользвоталь с таким email уже зарегистрирован"
+        )
     await db.commit()
-    
-    return {"status":"ok"}
+
+    return {"status": "ok"}
+
 
 @router.get("/me", summary="Получить пользователя")
 async def get_me(
     user_id: UserIdDep,
     db: DBDep,
-):  
+):
     if not user_id:
         raise HTTPException(status_code=401, detail="Пользователь не найден")
     user = await db.users.get_one_or_none(id=user_id)
     return user
-    

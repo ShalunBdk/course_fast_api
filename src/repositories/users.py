@@ -1,4 +1,3 @@
-    
 from pydantic import EmailStr
 from sqlalchemy import select
 

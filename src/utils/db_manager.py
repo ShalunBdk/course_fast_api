@@ -11,7 +11,7 @@ class DBManager:
 
     async def __aenter__(self):
         self.session = self.session_factory()
-    
+
         self.hotels = HotelsRepository(self.session)
         self.rooms = RoomsRepository(self.session)
         self.users = UsersRepository(self.session)
