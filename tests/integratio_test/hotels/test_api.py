@@ -7,4 +7,4 @@ async def test_get_hotels(ac):
         },
     )
     assert response.status_code == 200
-    assert isinstance(response.json(), list)
+    assert isinstance(response.json(), dict)

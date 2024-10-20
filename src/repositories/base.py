@@ -1,10 +1,12 @@
+import logging
 from typing import Any, Sequence
 from pydantic import BaseModel
+from asyncpg.exceptions import UniqueViolationError
 from sqlalchemy import delete, insert, select, update
 from sqlalchemy.exc import NoResultFound, IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.exceptions import ObjectNotFoundException
+from src.exceptions import ObjectAlreadyExistsException, ObjectNotFoundException
 from src.database import Base
 from src.repositories.mappers.base import DataMapper
 
@@ -50,8 +52,14 @@ class BaseRepository:
         )
         try:
             result = await self.session.execute(add_data_stmt)
-        except IntegrityError:
-            raise ObjectNotFoundException
+        except IntegrityError as e:
+            if isinstance(e.orig.__cause__, UniqueViolationError):
+                raise ObjectAlreadyExistsException from e
+            else:
+                logging.error(
+                    f"Не удалось добавить данные в БД, входные данные={data}: тип ошибки: {type(e.orig.__cause__)=}"
+                )
+                raise e
         model = result.scalars().one()
         return self.mapper.map_to_domain_entity(model)
 
@@ -66,14 +74,10 @@ class BaseRepository:
             .values(data.model_dump(exclude_unset=exclude_unset))
         )
         result = await self.session.execute(update_stmt)
-        if result.rowcount == 0:
-            raise ObjectNotFoundException
         
 
     async def delete(self, **filter_by):
         delete_stmt = delete(self.model).filter_by(**filter_by)
         result = await self.session.execute(delete_stmt)
-        if result.rowcount == 0:
-            raise ObjectNotFoundException
         
         
