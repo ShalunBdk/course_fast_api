@@ -36,7 +36,7 @@ docker run --name booking_celery_worker \
 docker run --name booking_nginx \
     -v ./nginx.conf:/etc/nginx/nginx.conf \
     --network=myNetwork \
-    --rm -p 80:80 nginx
+    -d -p 80:80 nginx
 
     docker run --name booking_nginx -v ./nginx.conf:/etc/nginx/nginx.conf --network=myNetwork --rm -p 80:80 nginx
 
