@@ -4,7 +4,7 @@ from datetime import date
 from fastapi import APIRouter, Body, Query
 
 from src.services.rooms import RoomsService
-from src.exceptions import HotelNotFoundException, HotelNotFoundHTTPException, ObjectNotFoundException, RoomNotFoundException, RoomNotFoundHTTPException
+from src.exceptions import FacilityNotFoundExecption, FacilityNotFoundHTTPExecption, HotelNotFoundException, HotelNotFoundHTTPException, ObjectNotFoundException, RoomNotFoundException, RoomNotFoundHTTPException
 from src.api.dependecies import DBDep
 from src.schemas.rooms import RoomAddRequest, RoomPatchRequest
 
@@ -71,6 +71,8 @@ async def create_room(
         raise HotelNotFoundHTTPException
     except RoomNotFoundException:
         raise RoomNotFoundHTTPException
+    except FacilityNotFoundExecption:
+        raise FacilityNotFoundHTTPExecption
     return {"status": "ok", "data": room}
 
 

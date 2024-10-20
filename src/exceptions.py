@@ -52,6 +52,9 @@ class EmailNotRegisteredException(NabronirovalException):
 class IncorrectPasswordException(NabronirovalException):
     detail = "Введён неверный пароль"
 
+class FacilityNotFoundExecption(NabronirovalException):
+    detail = "Удобство не найдено"
+
 def check_date_to_after_date_from(date_from: date, date_to: date) -> None:
     if date_from >= date_to:
         raise HTTPException(status_code=409, detail="Дата заезда позже даты выезда")
@@ -91,3 +94,7 @@ class EmailNotRegisteredHTTPException(NabronirovalHTTPException):
 class IncorrectPasswordHTTPException(NabronirovalHTTPException):
     status_code = 401
     detail = "Введён неверный пароль"
+
+class FacilityNotFoundHTTPExecption(NabronirovalHTTPException):
+    status_code = 409
+    detail = "Удобство не найдено"

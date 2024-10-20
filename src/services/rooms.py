@@ -1,9 +1,11 @@
 from datetime import date
 
+from sqlalchemy.exc import IntegrityError
+
 from src.services.hotels import HotelService
 from src.schemas.facilities import RoomsFacilityAdd
 from src.schemas.rooms import Room, RoomAdd, RoomAddRequest, RoomPatch, RoomPatchRequest
-from src.exceptions import HotelNotFoundException, ObjectNotFoundException, RoomNotFoundException, check_date_to_after_date_from
+from src.exceptions import FacilityNotFoundExecption, ObjectNotFoundException, RoomNotFoundException, check_date_to_after_date_from
 from src.services.base import BaseService
 
 
@@ -27,7 +29,10 @@ class RoomsService(BaseService):
                 RoomsFacilityAdd(room_id=room.id, facility_id=f_id)
                 for f_id in room_data.facilities_ids
             ]
-            await self.db.rooms_facilities.add_bulk(rooms_facilities_data)
+            try:
+                await self.db.rooms_facilities.add_bulk(rooms_facilities_data)
+            except IntegrityError:
+                raise FacilityNotFoundExecption
         await self.db.commit()
         return room
     
