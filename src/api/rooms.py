@@ -20,7 +20,7 @@ async def get_rooms(
     date_to: date = Query(examples="2024-10-06"),
 ):
     try:
-        RoomsService(db).get_filtered_by_time(hotel_id, date_from, date_to)
+        return await RoomsService(db).get_filtered_by_time(hotel_id, date_from, date_to)
     except ObjectNotFoundException:
         raise RoomNotFoundHTTPException
 

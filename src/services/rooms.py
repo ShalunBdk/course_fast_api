@@ -22,12 +22,14 @@ class RoomsService(BaseService):
         HotelService(self.db).get_hotel_with_check(hotel_id)
         _room_data = RoomAdd(hotel_id=hotel_id, **room_data.model_dump())
         room = await self.db.rooms.add(_room_data)
-        rooms_facilities_data = [
-            RoomsFacilityAdd(room_id=room.id, facility_id=f_id)
-            for f_id in room_data.facilities_ids
-        ]
-        await self.db.rooms_facilities.add_bulk(rooms_facilities_data)
+        if room_data.facilities_ids:
+            rooms_facilities_data = [
+                RoomsFacilityAdd(room_id=room.id, facility_id=f_id)
+                for f_id in room_data.facilities_ids
+            ]
+            await self.db.rooms_facilities.add_bulk(rooms_facilities_data)
         await self.db.commit()
+        return room
     
     async def edit_room(
         self,
