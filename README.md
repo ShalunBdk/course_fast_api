@@ -35,6 +35,8 @@ docker run --name booking_celery_worker \
 
 docker run --name booking_nginx \
     -v ./nginx.conf:/etc/nginx/nginx.conf \
+    -v /etc/letsencrypt:/etc/letsencrypt \
+    -v /var/lib/letsencrypt:/var/lib/letsencrypt \
     --network=myNetwork \
     -d -p 80:80 nginx
 
