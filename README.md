@@ -38,7 +38,7 @@ docker run --name booking_nginx \
     -v /etc/letsencrypt:/etc/letsencrypt \
     -v /var/lib/letsencrypt:/var/lib/letsencrypt \
     --network=myNetwork \
-    -d -p 80:80 nginx
+    -d -p 443:443 nginx
 
     docker run --name booking_nginx -v ./nginx.conf:/etc/nginx/nginx.conf --network=myNetwork --rm -p 80:80 nginx
 
