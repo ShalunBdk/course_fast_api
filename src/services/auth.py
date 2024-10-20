@@ -60,5 +60,4 @@ class AuthService(BaseService):
         return access_token
     
     async def get_one_or_none(self, user_id: int):
-        user = await self.db.users.get_one_or_none(id=user_id)
-        return user
+        return await self.db.users.get_one_or_none(id=user_id)
