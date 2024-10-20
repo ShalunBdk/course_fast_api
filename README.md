@@ -1,4 +1,7 @@
 
+git config --local user.name "Александр Шалин"
+git config --local user.email "shalunbdk@gmail.com"
+
 docker network create myNetwork
 
 docker run --name booking_db \
