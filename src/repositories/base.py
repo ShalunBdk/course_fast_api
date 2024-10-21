@@ -36,7 +36,7 @@ class BaseRepository:
         if model is None:
             return None
         return self.mapper.map_to_domain_entity(model)
-    
+
     async def get_one(self, **filer_by) -> BaseModel:
         query = select(self.model).filter_by(**filer_by)
         result = await self.session.execute(query)
@@ -73,11 +73,8 @@ class BaseRepository:
             .filter_by(**filter_by)
             .values(data.model_dump(exclude_unset=exclude_unset))
         )
-        result = await self.session.execute(update_stmt)
-        
+        await self.session.execute(update_stmt)
 
     async def delete(self, **filter_by):
         delete_stmt = delete(self.model).filter_by(**filter_by)
-        result = await self.session.execute(delete_stmt)
-        
-        
+        await self.session.execute(delete_stmt)

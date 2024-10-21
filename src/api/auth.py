@@ -1,8 +1,15 @@
-from fastapi import APIRouter, HTTPException, Response
+from fastapi import APIRouter, Response
 
-import sqlalchemy
-
-from src.exceptions import EmailNotRegisteredException, EmailNotRegisteredHTTPException, IncorrectPasswordException, IncorrectPasswordHTTPException, NullPasswordException, NullPasswordHTTPException, ObjectAlreadyExistsException, UserAlreadyExistsException, UserAlreadyExistsHTTPException
+from src.exceptions import (
+    EmailNotRegisteredException,
+    EmailNotRegisteredHTTPException,
+    IncorrectPasswordException,
+    IncorrectPasswordHTTPException,
+    NullPasswordException,
+    NullPasswordHTTPException,
+    UserAlreadyExistsException,
+    UserAlreadyExistsHTTPException,
+)
 from src.api.dependecies import DBDep, UserIdDep
 from src.services.auth import AuthService
 from src.schemas.users import UserRequestAdd

@@ -29,7 +29,7 @@ async def get_db_null_pull():
 
 
 @pytest.fixture(scope="function")
-async def db()  -> AsyncGenerator[DBManager, None]:
+async def db() -> AsyncGenerator[DBManager, None]:
     async for db in get_db_null_pull():
         yield db
 

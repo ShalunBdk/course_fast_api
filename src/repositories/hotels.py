@@ -41,6 +41,4 @@ class HotelsRepository(BaseRepository):
         res = result.scalars().all()
         if not res:
             raise ObjectNotFoundException()
-        return [
-            self.mapper.map_to_domain_entity(model) for model in res
-        ]
+        return [self.mapper.map_to_domain_entity(model) for model in res]

@@ -32,7 +32,7 @@ async def get_hotels(
             date_to,
         )
     except ObjectNotFoundException:
-            raise HotelNotFoundHTTPException
+        raise HotelNotFoundHTTPException
     return {"status": "ok", "data": hotels}
 
 
@@ -43,7 +43,7 @@ async def get_hotel(
 ):
     try:
         return await HotelService(db).get_hotel(hotel_id=hotel_id)
-    except ObjectNotFoundException as e:
+    except ObjectNotFoundException:
         raise HotelNotFoundHTTPException
 
 

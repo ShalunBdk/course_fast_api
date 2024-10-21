@@ -33,10 +33,7 @@ class RoomsRepository(BaseRepository):
         res = result.scalars().all()
         if not res:
             raise ObjectNotFoundException()
-        return [
-            RoomDataWithRelsMapper.map_to_domain_entity(model)
-            for model in res
-        ]
+        return [RoomDataWithRelsMapper.map_to_domain_entity(model) for model in res]
 
     async def get_one_with_rels(self, **filer_by):
         query = (

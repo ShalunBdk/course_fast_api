@@ -3,7 +3,14 @@ from datetime import datetime, timezone, timedelta
 import jwt
 from passlib.context import CryptContext
 
-from src.exceptions import EmailNotRegisteredException, IncorrectPasswordException, IncorrectTokenException, NullPasswordException, ObjectAlreadyExistsException, UserAlreadyExistsException
+from src.exceptions import (
+    EmailNotRegisteredException,
+    IncorrectPasswordException,
+    IncorrectTokenException,
+    NullPasswordException,
+    ObjectAlreadyExistsException,
+    UserAlreadyExistsException,
+)
 from src.schemas.users import UserAdd, UserRequestAdd
 from src.services.base import BaseService
 from src.config import settings
@@ -38,7 +45,7 @@ class AuthService(BaseService):
             raise IncorrectTokenException
         except jwt.exceptions.DecodeError:
             raise IncorrectTokenException
-        
+
     async def register_user(self, data: UserRequestAdd):
         if not data.password:
             raise NullPasswordException
@@ -58,6 +65,6 @@ class AuthService(BaseService):
             raise IncorrectPasswordException
         access_token = self.create_access_token({"user_id": user.id})
         return access_token
-    
+
     async def get_one_or_none(self, user_id: int):
         return await self.db.users.get_one_or_none(id=user_id)

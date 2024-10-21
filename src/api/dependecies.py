@@ -1,9 +1,13 @@
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, Query, Request
+from fastapi import Depends, Query, Request
 from pydantic import BaseModel
 
-from src.exceptions import IncorrectTokenException, IncorrectTokenHTTPException, NoAccessTokenHTTPException
+from src.exceptions import (
+    IncorrectTokenException,
+    IncorrectTokenHTTPException,
+    NoAccessTokenHTTPException,
+)
 from src.services.auth import AuthService
 from src.utils.db_manager import DBManager
 from src.database import async_session_maker

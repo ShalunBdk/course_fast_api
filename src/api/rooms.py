@@ -1,10 +1,16 @@
-
-
 from datetime import date
 from fastapi import APIRouter, Body, Query
 
 from src.services.rooms import RoomsService
-from src.exceptions import FacilityNotFoundExecption, FacilityNotFoundHTTPExecption, HotelNotFoundException, HotelNotFoundHTTPException, ObjectNotFoundException, RoomNotFoundException, RoomNotFoundHTTPException
+from src.exceptions import (
+    FacilityNotFoundExecption,
+    FacilityNotFoundHTTPExecption,
+    HotelNotFoundException,
+    HotelNotFoundHTTPException,
+    ObjectNotFoundException,
+    RoomNotFoundException,
+    RoomNotFoundHTTPException,
+)
 from src.api.dependecies import DBDep
 from src.schemas.rooms import RoomAddRequest, RoomPatchRequest
 
@@ -23,6 +29,7 @@ async def get_rooms(
         return await RoomsService(db).get_filtered_by_time(hotel_id, date_from, date_to)
     except ObjectNotFoundException:
         raise RoomNotFoundHTTPException
+
 
 @router.get("/{hotel_id}/rooms/{room_id}", summary="Получение номера по ID")
 async def get_room(
@@ -64,7 +71,7 @@ async def create_room(
             },
         }
     ),
-):    
+):
     try:
         room = await RoomsService(db).create_room(hotel_id, room_data)
     except HotelNotFoundException:
@@ -100,7 +107,9 @@ async def partially_edit_room(
     db: DBDep,
 ):
     try:
-        await RoomsService(db).partially_edit_room(hotel_id, room_id, room_data, exclude_unset=True)
+        await RoomsService(db).partially_edit_room(
+            hotel_id, room_id, room_data, exclude_unset=True
+        )
     except HotelNotFoundException:
         raise HotelNotFoundHTTPException
     except RoomNotFoundException:
