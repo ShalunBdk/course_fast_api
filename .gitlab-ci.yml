@@ -33,7 +33,7 @@ Migrations:
 Tests:
   stage: test
   script:
-    - - docker run --rm --network myNetwork booking-api-image pytest -s -v
+    - docker run --rm --network myNetwork booking-api-image pytest -s -v
 
 
 deploy-job:
