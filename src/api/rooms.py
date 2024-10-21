@@ -12,7 +12,7 @@ from src.schemas.rooms import RoomAddRequest, RoomPatchRequest
 router = APIRouter(prefix="/hotels", tags=["Номера"])
 
 
-@router.get("/{hotel_id}/rooms", summary="Получение номеров")
+@router.get("/{hotel_id}/rooms", summary="Получение номеров по датам")
 async def get_rooms(
     hotel_id: int,
     db: DBDep,
